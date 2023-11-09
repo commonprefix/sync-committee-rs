@@ -142,8 +142,7 @@ pub struct SignedVoluntaryExit {
 	pub signature: BlsSignature,
 }
 
-#[derive(Default, Debug, Clone, SimpleSerialize, codec::Encode, codec::Decode, PartialEq, Eq)]
-#[cfg_attr(feature = "std", derive(serde::Serialize, serde::Deserialize))]
+#[derive(serde::Serialize, serde::Deserialize, Default, Debug, Clone, SimpleSerialize, codec::Encode, codec::Decode, PartialEq, Eq)]
 pub struct SyncAggregate<const SYNC_COMMITTEE_SIZE: usize> {
 	pub sync_committee_bits: Bitvector<SYNC_COMMITTEE_SIZE>,
 	pub sync_committee_signature: BlsSignature,
