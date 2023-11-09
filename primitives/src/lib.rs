@@ -9,7 +9,6 @@ pub mod consensus_types;
 pub mod constants;
 pub mod domains;
 pub mod error;
-#[cfg(feature = "std")]
 pub mod serde;
 mod ssz;
 pub mod types;
