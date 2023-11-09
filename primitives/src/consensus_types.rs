@@ -7,6 +7,7 @@ use crate::{
 	ssz::{ByteList, ByteVector},
 };
 use alloc::{vec, vec::Vec};
+use serde;
 use ssz_rs::{prelude::*, Deserialize, List, Vector};
 
 #[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
