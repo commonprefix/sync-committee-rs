@@ -149,12 +149,11 @@ pub struct SyncAggregate<const SYNC_COMMITTEE_SIZE: usize> {
 	pub sync_committee_signature: BlsSignature,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "std", derive(serde::Serialize, serde::Deserialize))]
+#[derive(serde::Serialize, serde::Deserialize, Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
 pub struct SyncCommittee<const SYNC_COMMITTEE_SIZE: usize> {
-	#[cfg_attr(feature = "std", serde(rename = "pubkeys"))]
+	#[serde(rename = "pubkeys")]
 	pub public_keys: Vector<BlsPublicKey, SYNC_COMMITTEE_SIZE>,
-	#[cfg_attr(feature = "std", serde(rename = "aggregate_pubkey"))]
+	#[serde(rename = "aggregate_pubkey")]
 	pub aggregate_public_key: BlsPublicKey,
 }
 
