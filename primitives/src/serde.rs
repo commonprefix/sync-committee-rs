@@ -3,7 +3,7 @@ use hex::FromHexError;
 
 const HEX_ENCODING_PREFIX: &str = "0x";
 
-#[cfg_attr(feature = "serde", derive(Debug))]
+#[derive(Debug)]
 pub enum HexError {
 	Hex,
 	MissingPrefix,
