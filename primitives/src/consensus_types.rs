@@ -7,11 +7,10 @@ use crate::{
 	ssz::{ByteList, ByteVector},
 };
 use alloc::{vec, vec::Vec};
-use serde;
 use ssz_rs::{prelude::*, Deserialize, List, Vector};
+use crate::serde::as_string;
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "std", derive(serde::Serialize, serde::Deserialize))]
+#[derive(serde::Serialize, serde::Deserialize, Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
 pub struct BeaconBlockHeader {
 	#[serde(with = "crate::serde::as_string")]
 	pub slot: u64,
