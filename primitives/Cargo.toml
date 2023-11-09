@@ -33,3 +33,4 @@ std = [
 ]
 mainnet = []
 goerli = []
+serialize = []
