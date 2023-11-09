@@ -12,9 +12,9 @@ use ssz_rs::{prelude::*, Deserialize, List, Vector};
 #[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
 #[cfg_attr(feature = "std", derive(serde::Serialize, serde::Deserialize))]
 pub struct BeaconBlockHeader {
-	#[cfg_attr(feature = "std", serde(with = "crate::serde::as_string"))]
+	#[serde(with = "crate::serde::as_string")]
 	pub slot: u64,
-	#[cfg_attr(feature = "std", serde(with = "crate::serde::as_string"))]
+	#[serde(with = "crate::serde::as_string")]
 	pub proposer_index: u64,
 	pub parent_root: Root,
 	pub state_root: Root,
