@@ -7,10 +7,9 @@ use core::{
 };
 use ssz_rs::prelude::*;
 
-#[derive(Default, Clone, Eq, SimpleSerialize, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "std", derive(serde::Serialize, serde::Deserialize))]
+#[derive(serde::Serialize, serde::Deserialize, Default, Clone, Eq, SimpleSerialize, codec::Encode, codec::Decode)]
 pub struct ByteVector<const N: usize>(
-	#[cfg_attr(feature = "serde", serde(with = "crate::serde::as_hex"))] Vector<u8, N>,
+	#[serde(with = "crate::serde::as_hex")] Vector<u8, N>,
 );
 
 impl<const N: usize> TryFrom<&[u8]> for ByteVector<N> {
