@@ -85,7 +85,7 @@ pub use mainnet::*;
 pub use sepolia::*;
 
 use crate::ssz::ByteVector;
-#[cfg(all(not(feature = "mainnet"), not(feature = "goerli")))]
+#[cfg(all(not(feature = "mainnet"), not(feature = "goerli"), not(feature = "sepolia")))]
 pub use devnet::*;
 
 #[cfg(feature = "goerli")]
@@ -133,7 +133,7 @@ pub mod sepolia {
 	pub const CAPELLA_FORK_VERSION: Version = hex_literal::hex!("90000072");
 }
 
-#[cfg(all(not(feature = "mainnet"), not(feature = "goerli")))]
+#[cfg(all(not(feature = "mainnet"), not(feature = "goerli"), not(feature = "sepolia")))]
 pub mod devnet {
 	use super::*;
 	use hex_literal::hex;
