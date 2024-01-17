@@ -81,6 +81,9 @@ pub use goerli::*;
 #[cfg(feature = "mainnet")]
 pub use mainnet::*;
 
+#[cfg(feature = "sepolia")]
+pub use sepolia::*;
+
 use crate::ssz::ByteVector;
 #[cfg(all(not(feature = "mainnet"), not(feature = "goerli")))]
 pub use devnet::*;
@@ -113,6 +116,21 @@ pub mod mainnet {
 	pub const BELLATRIX_FORK_EPOCH: Epoch = 144896;
 	pub const CAPELLA_FORK_EPOCH: Epoch = 194048;
 	pub const CAPELLA_FORK_VERSION: Version = hex_literal::hex!("03000000");
+}
+
+#[cfg(feature = "sepolia")]
+pub mod sepolia {
+	use super::*;
+	pub const SLOTS_PER_EPOCH: Slot = 32;
+	pub const GENESIS_VALIDATORS_ROOT: [u8; 32] =
+		hex_literal::hex!("d8ea171f3c94aea21ebc42a1ed61052acf3f9209c00e4efbaaddac09ed9b8078");
+	pub const BELLATRIX_FORK_VERSION: Version = hex_literal::hex!("90000071");
+	pub const ALTAIR_FORK_VERSION: Version = hex_literal::hex!("90000070");
+	pub const GENESIS_FORK_VERSION: Version = hex_literal::hex!("90000069");
+	pub const ALTAIR_FORK_EPOCH: Epoch = 50;
+	pub const BELLATRIX_FORK_EPOCH: Epoch = 100;
+	pub const CAPELLA_FORK_EPOCH: Epoch = 56832;
+	pub const CAPELLA_FORK_VERSION: Version = hex_literal::hex!("90000072");
 }
 
 #[cfg(all(not(feature = "mainnet"), not(feature = "goerli")))]
