@@ -101,6 +101,8 @@ pub mod goerli {
 	pub const BELLATRIX_FORK_EPOCH: Epoch = 112260;
 	pub const CAPELLA_FORK_EPOCH: Epoch = 162304;
 	pub const CAPELLA_FORK_VERSION: Version = hex_literal::hex!("03001020");
+	pub const DENEB_FORK_EPOCH: Epoch = 231680;
+	pub const DENEB_FORK_VERSION: Version = hex_literal::hex!("04001020");
 }
 
 #[cfg(feature = "mainnet")]
@@ -116,6 +118,8 @@ pub mod mainnet {
 	pub const BELLATRIX_FORK_EPOCH: Epoch = 144896;
 	pub const CAPELLA_FORK_EPOCH: Epoch = 194048;
 	pub const CAPELLA_FORK_VERSION: Version = hex_literal::hex!("03000000");
+	pub const DENEB_FORK_EPOCH: Epoch = u64::MAX;
+	pub const DENEB_FORK_VERSION: Version = hex_literal::hex!("04000000");
 }
 
 #[cfg(feature = "sepolia")]
@@ -131,6 +135,8 @@ pub mod sepolia {
 	pub const BELLATRIX_FORK_EPOCH: Epoch = 100;
 	pub const CAPELLA_FORK_EPOCH: Epoch = 56832;
 	pub const CAPELLA_FORK_VERSION: Version = hex_literal::hex!("90000072");
+	pub const DENEB_FORK_EPOCH: Epoch = u64::MAX;
+	pub const DENEB_FORK_VERSION: Version = hex_literal::hex!("90000073");
 }
 
 #[cfg(all(not(feature = "mainnet"), not(feature = "goerli"), not(feature = "sepolia")))]
