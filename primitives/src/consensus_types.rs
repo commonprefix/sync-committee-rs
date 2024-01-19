@@ -217,6 +217,10 @@ pub struct ExecutionPayload<
 	pub block_hash: Hash32,
 	pub transactions: List<Transaction<MAX_BYTES_PER_TRANSACTION>, MAX_TRANSACTIONS_PER_PAYLOAD>,
 	pub withdrawals: List<Withdrawal, MAX_WITHDRAWALS_PER_PAYLOAD>,
+	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
+    pub blob_gas_used: u64,
+	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
+    pub excess_blob_gas: u64
 }
 
 #[derive(Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
@@ -281,6 +285,7 @@ pub struct BeaconBlockBody<
 		MAX_WITHDRAWALS_PER_PAYLOAD,
 	>,
 	pub bls_to_execution_changes: List<SignedBlsToExecutionChange, MAX_BLS_TO_EXECUTION_CHANGES>,
+    pub blob_kzg_commitments: List<ByteVector<48>, 4096>
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, SimpleSerialize, codec::Encode, codec::Decode)]
