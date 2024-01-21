@@ -8,9 +8,9 @@ use crate::{
 };
 use alloc::{vec, vec::Vec};
 use ssz_rs::{prelude::*, Deserialize, List, Vector};
+use superstruct::superstruct;
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct BeaconBlockHeader {
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
 	pub slot: u64,
@@ -21,16 +21,14 @@ pub struct BeaconBlockHeader {
 	pub body_root: Root,
 }
 
-#[derive(Default, Clone, Debug, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct Checkpoint {
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
 	pub epoch: u64,
 	pub root: Root,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct Eth1Data {
 	pub deposit_root: Root,
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
@@ -38,8 +36,7 @@ pub struct Eth1Data {
 	pub block_hash: Hash32,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct Validator {
 	#[cfg_attr(feature = "serialize", serde(rename = "pubkey"))]
 	pub public_key: BlsPublicKey,
@@ -58,22 +55,19 @@ pub struct Validator {
 	pub withdrawable_epoch: Epoch,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct ProposerSlashing {
 	pub signed_header_1: SignedBeaconBlockHeader,
 	pub signed_header_2: SignedBeaconBlockHeader,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct SignedBeaconBlockHeader {
 	pub message: BeaconBlockHeader,
 	pub signature: BlsSignature,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct IndexedAttestation<const MAX_VALIDATORS_PER_COMMITTEE: usize> {
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::collection_over_string"))]
 	pub attesting_indices: List<u64, MAX_VALIDATORS_PER_COMMITTEE>,
@@ -81,8 +75,7 @@ pub struct IndexedAttestation<const MAX_VALIDATORS_PER_COMMITTEE: usize> {
 	pub signature: BlsSignature,
 }
 
-#[derive(Default, Clone, Debug, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct AttestationData {
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
 	pub slot: u64,
@@ -93,30 +86,26 @@ pub struct AttestationData {
 	pub target: Checkpoint,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct AttesterSlashing<const MAX_VALIDATORS_PER_COMMITTEE: usize> {
 	pub attestation_1: IndexedAttestation<MAX_VALIDATORS_PER_COMMITTEE>,
 	pub attestation_2: IndexedAttestation<MAX_VALIDATORS_PER_COMMITTEE>,
 }
 
-#[derive(Default, Debug, SimpleSerialize, codec::Encode, codec::Decode, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct Attestation<const MAX_VALIDATORS_PER_COMMITTEE: usize> {
 	pub aggregation_bits: Bitlist<MAX_VALIDATORS_PER_COMMITTEE>,
 	pub data: AttestationData,
 	pub signature: BlsSignature,
 }
 
-#[derive(Default, Debug, SimpleSerialize, codec::Encode, codec::Decode, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct Deposit {
 	pub proof: Vector<Hash32, DEPOSIT_PROOF_LENGTH>,
 	pub data: DepositData,
 }
 
-#[derive(Default, Debug, Clone, SimpleSerialize, codec::Encode, codec::Decode, PartialEq, Eq)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct DepositData {
 	#[cfg_attr(feature = "serialize", serde(rename = "pubkey"))]
 	pub public_key: BlsPublicKey,
@@ -126,8 +115,7 @@ pub struct DepositData {
 	pub signature: BlsSignature,
 }
 
-#[derive(Default, Debug, SimpleSerialize, codec::Encode, codec::Decode, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct VoluntaryExit {
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
 	pub epoch: u64,
@@ -135,22 +123,19 @@ pub struct VoluntaryExit {
 	pub validator_index: u64,
 }
 
-#[derive(Default, Debug, SimpleSerialize, codec::Encode, codec::Decode, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct SignedVoluntaryExit {
 	pub message: VoluntaryExit,
 	pub signature: BlsSignature,
 }
 
-#[derive(Default, Debug, Clone, SimpleSerialize, codec::Encode, codec::Decode, PartialEq, Eq)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct SyncAggregate<const SYNC_COMMITTEE_SIZE: usize> {
 	pub sync_committee_bits: Bitvector<SYNC_COMMITTEE_SIZE>,
 	pub sync_committee_signature: BlsSignature,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct SyncCommittee<const SYNC_COMMITTEE_SIZE: usize> {
 	#[cfg_attr(feature = "serialize", serde(rename = "pubkeys"))]
 	pub public_keys: Vector<BlsPublicKey, SYNC_COMMITTEE_SIZE>,
@@ -158,8 +143,7 @@ pub struct SyncCommittee<const SYNC_COMMITTEE_SIZE: usize> {
 	pub aggregate_public_key: BlsPublicKey,
 }
 
-#[derive(Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct Withdrawal {
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
 	pub index: WithdrawalIndex,
@@ -170,8 +154,7 @@ pub struct Withdrawal {
 	pub amount: Gwei,
 }
 
-#[derive(Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct BlsToExecutionChange {
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
 	pub validator_index: ValidatorIndex,
@@ -180,8 +163,7 @@ pub struct BlsToExecutionChange {
 	pub to_execution_address: ExecutionAddress,
 }
 
-#[derive(Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct SignedBlsToExecutionChange {
 	message: BlsToExecutionChange,
 	signature: BlsSignature,
@@ -189,8 +171,13 @@ pub struct SignedBlsToExecutionChange {
 
 pub type Transaction<const MAX_BYTES_PER_TRANSACTION: usize> = ByteList<MAX_BYTES_PER_TRANSACTION>;
 
-#[derive(Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[superstruct(
+    variants(Bellatrix, Capella, Deneb),
+    variant_attributes(
+		derive(Debug, Clone, SimpleSerialize, PartialEq, Eq, Default, serde::Deserialize),
+    )
+)]
+#[derive(Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct ExecutionPayload<
 	const BYTES_PER_LOGS_BLOOM: usize,
 	const MAX_EXTRA_DATA_BYTES: usize,
@@ -216,15 +203,35 @@ pub struct ExecutionPayload<
 	pub base_fee_per_gas: U256,
 	pub block_hash: Hash32,
 	pub transactions: List<Transaction<MAX_BYTES_PER_TRANSACTION>, MAX_TRANSACTIONS_PER_PAYLOAD>,
+	#[superstruct(only(Capella, Deneb))]
 	pub withdrawals: List<Withdrawal, MAX_WITHDRAWALS_PER_PAYLOAD>,
+	#[superstruct(only(Deneb))]
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
-	pub blob_gas_used: u64,
+    pub blob_gas_used: u64,
+	#[superstruct(only(Deneb))]
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
 	pub excess_blob_gas: u64,
 }
 
-#[derive(Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+impl <
+	const BYTES_PER_LOGS_BLOOM: usize,
+	const MAX_EXTRA_DATA_BYTES: usize,
+	const MAX_BYTES_PER_TRANSACTION: usize,
+	const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+	const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+	> Default for ExecutionPayload<
+	BYTES_PER_LOGS_BLOOM,
+	MAX_EXTRA_DATA_BYTES,
+	MAX_BYTES_PER_TRANSACTION,
+	MAX_TRANSACTIONS_PER_PAYLOAD,
+	MAX_WITHDRAWALS_PER_PAYLOAD>
+	 {
+	fn default() -> Self {
+		ExecutionPayload::Capella(ExecutionPayloadCapella::default())
+	}
+}
+
+#[derive(Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, serde::Deserialize)]
 pub struct ExecutionPayloadHeader<
 	const BYTES_PER_LOGS_BLOOM: usize,
 	const MAX_EXTRA_DATA_BYTES: usize,
@@ -254,8 +261,14 @@ pub struct ExecutionPayloadHeader<
 	pub excess_blob_gas: u64,
 }
 
-#[derive(Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+
+#[superstruct(
+    variants(Bellatrix, Capella, Deneb),
+    variant_attributes(
+		derive(Debug, Clone, SimpleSerialize, PartialEq, Eq, Default, serde::Deserialize),
+    )
+)]
+#[derive(Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct BeaconBlockBody<
 	const MAX_PROPOSER_SLASHINGS: usize,
 	const MAX_VALIDATORS_PER_COMMITTEE: usize,
@@ -288,12 +301,53 @@ pub struct BeaconBlockBody<
 		MAX_TRANSACTIONS_PER_PAYLOAD,
 		MAX_WITHDRAWALS_PER_PAYLOAD,
 	>,
+	#[superstruct(only(Capella, Deneb))]
 	pub bls_to_execution_changes: List<SignedBlsToExecutionChange, MAX_BLS_TO_EXECUTION_CHANGES>,
-	pub blob_kzg_commitments: List<ByteVector<48>, 4096>,
+	#[superstruct(only(Deneb))]
+    pub blob_kzg_commitments: List<ByteVector<48>, 4096>
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Eq, SimpleSerialize, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+impl <
+	const MAX_PROPOSER_SLASHINGS: usize,
+	const MAX_VALIDATORS_PER_COMMITTEE: usize,
+	const MAX_ATTESTER_SLASHINGS: usize,
+	const MAX_ATTESTATIONS: usize,
+	const MAX_DEPOSITS: usize,
+	const MAX_VOLUNTARY_EXITS: usize,
+	const SYNC_COMMITTEE_SIZE: usize,
+	const BYTES_PER_LOGS_BLOOM: usize,
+	const MAX_EXTRA_DATA_BYTES: usize,
+	const MAX_BYTES_PER_TRANSACTION: usize,
+	const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+	const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+	const MAX_BLS_TO_EXECUTION_CHANGES: usize,
+	> Default for BeaconBlockBody<
+	MAX_PROPOSER_SLASHINGS,
+	MAX_VALIDATORS_PER_COMMITTEE,
+	MAX_ATTESTER_SLASHINGS,
+	MAX_ATTESTATIONS,
+	MAX_DEPOSITS,
+	MAX_VOLUNTARY_EXITS,
+	SYNC_COMMITTEE_SIZE,
+	BYTES_PER_LOGS_BLOOM,
+	MAX_EXTRA_DATA_BYTES,
+	MAX_BYTES_PER_TRANSACTION,
+	MAX_TRANSACTIONS_PER_PAYLOAD,
+	MAX_WITHDRAWALS_PER_PAYLOAD,
+	MAX_BLS_TO_EXECUTION_CHANGES>
+	 {
+	fn default() -> Self {
+		BeaconBlockBody::Capella(BeaconBlockBodyCapella::default())
+	}
+}
+
+#[superstruct(
+    variants(Bellatrix, Capella, Deneb),
+    variant_attributes(
+		derive(Debug, Clone, SimpleSerialize, PartialEq, Eq, Default, serde::Deserialize),
+    )
+)]
+#[derive(Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct BeaconBlock<
 	const MAX_PROPOSER_SLASHINGS: usize,
 	const MAX_VALIDATORS_PER_COMMITTEE: usize,
@@ -331,8 +385,43 @@ pub struct BeaconBlock<
 		MAX_BLS_TO_EXECUTION_CHANGES,
 	>,
 }
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+
+impl<
+        const MAX_PROPOSER_SLASHINGS: usize,
+        const MAX_VALIDATORS_PER_COMMITTEE: usize,
+        const MAX_ATTESTER_SLASHINGS: usize,
+        const MAX_ATTESTATIONS: usize,
+        const MAX_DEPOSITS: usize,
+        const MAX_VOLUNTARY_EXITS: usize,
+        const SYNC_COMMITTEE_SIZE: usize,
+        const BYTES_PER_LOGS_BLOOM: usize,
+        const MAX_EXTRA_DATA_BYTES: usize,
+        const MAX_BYTES_PER_TRANSACTION: usize,
+        const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+        const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+        const MAX_BLS_TO_EXECUTION_CHANGES: usize,
+    > Default for BeaconBlock<
+        MAX_PROPOSER_SLASHINGS,
+        MAX_VALIDATORS_PER_COMMITTEE,
+        MAX_ATTESTER_SLASHINGS,
+        MAX_ATTESTATIONS,
+        MAX_DEPOSITS,
+        MAX_VOLUNTARY_EXITS,
+        SYNC_COMMITTEE_SIZE,
+        BYTES_PER_LOGS_BLOOM,
+        MAX_EXTRA_DATA_BYTES,
+        MAX_BYTES_PER_TRANSACTION,
+        MAX_TRANSACTIONS_PER_PAYLOAD,
+        MAX_WITHDRAWALS_PER_PAYLOAD,
+        MAX_BLS_TO_EXECUTION_CHANGES,
+    >
+{
+    fn default() -> Self {
+        BeaconBlock::Capella(BeaconBlockCapella::default())
+	}
+}
+
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct Fork {
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_hex"))]
 	pub previous_version: Version,
@@ -342,23 +431,20 @@ pub struct Fork {
 	pub epoch: Epoch,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, serde::Deserialize)]
 pub struct ForkData {
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_hex"))]
 	pub current_version: Version,
 	pub genesis_validators_root: Root,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, serde::Deserialize, PartialEq, Eq)]
 pub struct HistoricalSummary {
 	pub block_summary_root: Root,
 	pub state_summary_root: Root,
 }
 
-#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default, Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize)]
 pub struct BeaconState<
 	const SLOTS_PER_HISTORICAL_ROOT: usize,
 	const HISTORICAL_ROOTS_LIMIT: usize,
