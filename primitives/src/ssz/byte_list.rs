@@ -7,7 +7,7 @@ use core::{
 };
 use ssz_rs::prelude::*;
 
-#[derive(Default, Clone, Eq, SimpleSerialize, serde::Deserialize)]
+#[derive(Default, Clone, Eq, SimpleSerialize, serde::Deserialize, serde::Serialize)]
 pub struct ByteList<const N: usize>(
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_hex"))] List<u8, N>,
 );
