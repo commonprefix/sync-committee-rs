@@ -221,7 +221,6 @@ pub struct ExecutionPayload<
 	pub blob_gas_used: u64,
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
 	pub excess_blob_gas: u64,
-	pub parent_beacon_block_root: Bytes32,
 }
 
 #[derive(Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
@@ -249,6 +248,11 @@ pub struct ExecutionPayloadHeader<
 	pub block_hash: Hash32,
 	pub transactions_root: Root,
 	pub withdrawals_root: Root,
+	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
+	pub blob_gas_used: u64,
+	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
+	pub excess_blob_gas: u64,
+	pub parent_beacon_block_root: Bytes32,
 }
 
 #[derive(Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, codec::Encode, codec::Decode)]
