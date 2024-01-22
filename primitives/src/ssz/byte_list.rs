@@ -8,9 +8,7 @@ use core::{
 use ssz_rs::prelude::*;
 
 #[derive(Default, Clone, Eq, SimpleSerialize, serde::Deserialize, serde::Serialize)]
-pub struct ByteList<const N: usize>(
-	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_hex"))] List<u8, N>,
-);
+pub struct ByteList<const N: usize>(#[serde(with = "crate::serde::as_hex")] List<u8, N>);
 
 impl<const N: usize> TryFrom<&[u8]> for ByteList<N> {
 	type Error = ssz_rs::DeserializeError;
