@@ -153,4 +153,13 @@ pub mod devnet {
 	pub const BELLATRIX_FORK_EPOCH: Epoch = 0;
 	pub const CAPELLA_FORK_EPOCH: Epoch = 2;
 	pub const CAPELLA_FORK_VERSION: Version = hex!("52525503");
+	pub const DENEB_FORK_EPOCH: Epoch = u64::MAX;
+	pub const DENEB_FORK_VERSION: Version = hex_literal::hex!("52525504");
 }
+
+pub const FORKS: [(Epoch, Version); 4] = [
+	(ALTAIR_FORK_EPOCH, ALTAIR_FORK_VERSION),
+	(BELLATRIX_FORK_EPOCH, BELLATRIX_FORK_VERSION),
+	(CAPELLA_FORK_EPOCH, CAPELLA_FORK_VERSION),
+	(DENEB_FORK_EPOCH, DENEB_FORK_VERSION),
+];
