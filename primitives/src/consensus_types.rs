@@ -414,7 +414,7 @@ impl<
 		serde::Serialize
 	),)
 )]
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, SimpleSerialize, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(untagged)]
 pub struct BeaconBlock<
 	const MAX_PROPOSER_SLASHINGS: usize,
