@@ -212,16 +212,19 @@ pub type Transaction<const MAX_BYTES_PER_TRANSACTION: usize> = ByteList<MAX_BYTE
 
 #[superstruct(
 	variants(Bellatrix, Capella, Deneb),
-	variant_attributes(derive(
-		Debug,
-		Clone,
-		SimpleSerialize,
-		PartialEq,
-		Eq,
-		Default,
-		serde::Deserialize,
-		serde::Serialize
-	),)
+	variant_attributes(
+		derive(
+			Debug,
+			Clone,
+			SimpleSerialize,
+			PartialEq,
+			Eq,
+			Default,
+			serde::Deserialize,
+			serde::Serialize
+		),
+		serde(deny_unknown_fields)
+	)
 )]
 #[derive(Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 #[serde(untagged)]
@@ -314,16 +317,19 @@ pub struct ExecutionPayloadHeader<
 
 #[superstruct(
 	variants(Bellatrix, Capella, Deneb),
-	variant_attributes(derive(
-		Debug,
-		Clone,
-		SimpleSerialize,
-		PartialEq,
-		Eq,
-		Default,
-		serde::Deserialize,
-		serde::Serialize
-	),)
+	variant_attributes(
+		derive(
+			Debug,
+			Clone,
+			SimpleSerialize,
+			PartialEq,
+			Eq,
+			Default,
+			serde::Deserialize,
+			serde::Serialize
+		),
+		serde(deny_unknown_fields)
+	)
 )]
 #[derive(Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 #[serde(untagged)]
@@ -403,16 +409,19 @@ impl<
 
 #[superstruct(
 	variants(Bellatrix, Capella, Deneb),
-	variant_attributes(derive(
-		Debug,
-		Clone,
-		SimpleSerialize,
-		PartialEq,
-		Eq,
-		Default,
-		serde::Deserialize,
-		serde::Serialize
-	),)
+	variant_attributes(
+		derive(
+			Debug,
+			Clone,
+			SimpleSerialize,
+			PartialEq,
+			Eq,
+			Default,
+			serde::Deserialize,
+			serde::Serialize
+		),
+		serde(deny_unknown_fields)
+	)
 )]
 #[derive(Debug, Clone, SimpleSerialize, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(untagged)]
@@ -598,3 +607,17 @@ pub type ExecutionPayloadAlias = ExecutionPayloadCapella<
 	MAX_TRANSACTIONS_PER_PAYLOAD,
 	MAX_WITHDRAWALS_PER_PAYLOAD,
 >;
+
+// #[cfg(test)]
+// mod test {
+// 	use std::fs;
+
+// 	use super::BeaconBlockAlias;
+
+// 	#[test]
+// 	fn test_beacon_block_alias() {
+// 		let l = fs::read_to_string("./src/test.json").unwrap();
+// 		let block: BeaconBlockAlias = serde_json::from_str(&l);
+
+// 	}
+// }
