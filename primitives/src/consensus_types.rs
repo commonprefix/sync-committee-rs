@@ -2,8 +2,7 @@ use crate::{
 	constants::{
 		BlsPublicKey, BlsSignature, Bytes32, Epoch, ExecutionAddress, Gwei, Hash32,
 		ParticipationFlags, Root, Slot, ValidatorIndex, Version, WithdrawalIndex,
-		DEPOSIT_PROOF_LENGTH, JUSTIFICATION_BITS_LENGTH, MAX_PROPOSER_SLASHINGS,
-		MAX_VALIDATORS_PER_COMMITTEE, *,
+		DEPOSIT_PROOF_LENGTH, JUSTIFICATION_BITS_LENGTH,
 	},
 	ssz::{ByteList, ByteVector},
 };
@@ -226,7 +225,7 @@ pub type Transaction<const MAX_BYTES_PER_TRANSACTION: usize> = ByteList<MAX_BYTE
 		serde(deny_unknown_fields)
 	)
 )]
-#[derive(Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 #[serde(untagged)]
 pub struct ExecutionPayload<
 	const BYTES_PER_LOGS_BLOOM: usize,
@@ -283,6 +282,147 @@ impl<
 	}
 }
 
+impl<
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+	> ssz_rs::Merkleized
+	for ExecutionPayload<
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+	>
+{
+	fn hash_tree_root(&mut self) -> Result<Node, MerkleizationError> {
+		let t = self.clone();
+		if let ExecutionPayload::Bellatrix(mut inner) = t {
+			inner.hash_tree_root()
+		} else if let ExecutionPayload::Capella(mut inner) = t {
+			inner.hash_tree_root()
+		} else if let ExecutionPayload::Deneb(mut inner) = t {
+			inner.hash_tree_root()
+		} else {
+			unreachable!()
+		}
+	}
+}
+
+impl<
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+	> ssz_rs::Sized
+	for ExecutionPayload<
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+	>
+{
+	fn is_variable_size() -> bool {
+		true
+	}
+
+	fn ssz_size_hint() -> usize {
+		0
+	}
+}
+
+impl<
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+	> ssz_rs::Serialize
+	for ExecutionPayload<
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+	>
+{
+	fn serialize(&self, buffer: &mut Vec<u8>) -> Result<usize, SerializeError> {
+		match self {
+			ExecutionPayload::Bellatrix(inner) => inner.serialize(buffer),
+			ExecutionPayload::Capella(inner) => inner.serialize(buffer),
+			ExecutionPayload::Deneb(inner) => inner.serialize(buffer),
+		}
+	}
+}
+
+impl<
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+	> ssz_rs::Deserialize
+	for ExecutionPayload<
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+	>
+{
+	fn deserialize(_encoding: &[u8]) -> Result<Self, DeserializeError>
+	where
+		Self: Sized,
+	{
+		panic!("not implemented");
+	}
+}
+
+impl<
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+	> ssz_rs::SszReflect
+	for ExecutionPayload<
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+	>
+{
+	fn ssz_type_class(&self) -> ssz_rs::SszTypeClass {
+		match self {
+			ExecutionPayload::Bellatrix(inner) => inner.ssz_type_class(),
+			ExecutionPayload::Capella(inner) => inner.ssz_type_class(),
+			ExecutionPayload::Deneb(inner) => inner.ssz_type_class(),
+		}
+	}
+}
+
+impl<
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+	> ssz_rs::SimpleSerialize
+	for ExecutionPayload<
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+	>
+{
+}
+
 #[derive(
 	Default, Debug, Clone, SimpleSerialize, PartialEq, Eq, serde::Deserialize, serde::Serialize,
 )]
@@ -331,7 +471,7 @@ pub struct ExecutionPayloadHeader<
 		serde(deny_unknown_fields)
 	)
 )]
-#[derive(Debug, SimpleSerialize, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
 #[serde(untagged)]
 pub struct BeaconBlockBody<
 	const MAX_PROPOSER_SLASHINGS: usize,
@@ -407,24 +547,246 @@ impl<
 	}
 }
 
-#[superstruct(
-	variants(Bellatrix, Capella, Deneb),
-	variant_attributes(
-		derive(
-			Debug,
-			Clone,
-			SimpleSerialize,
-			PartialEq,
-			Eq,
-			Default,
-			serde::Deserialize,
-			serde::Serialize
-		),
-		serde(deny_unknown_fields)
-	)
+impl<
+		const MAX_PROPOSER_SLASHINGS: usize,
+		const MAX_VALIDATORS_PER_COMMITTEE: usize,
+		const MAX_ATTESTER_SLASHINGS: usize,
+		const MAX_ATTESTATIONS: usize,
+		const MAX_DEPOSITS: usize,
+		const MAX_VOLUNTARY_EXITS: usize,
+		const SYNC_COMMITTEE_SIZE: usize,
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+		const MAX_BLS_TO_EXECUTION_CHANGES: usize,
+	> ssz_rs::Merkleized
+	for BeaconBlockBody<
+		MAX_PROPOSER_SLASHINGS,
+		MAX_VALIDATORS_PER_COMMITTEE,
+		MAX_ATTESTER_SLASHINGS,
+		MAX_ATTESTATIONS,
+		MAX_DEPOSITS,
+		MAX_VOLUNTARY_EXITS,
+		SYNC_COMMITTEE_SIZE,
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+		MAX_BLS_TO_EXECUTION_CHANGES,
+	>
+{
+	fn hash_tree_root(&mut self) -> Result<Node, MerkleizationError> {
+		let t = self.clone();
+		if let BeaconBlockBody::Bellatrix(mut inner) = t {
+			inner.hash_tree_root()
+		} else if let BeaconBlockBody::Capella(mut inner) = t {
+			inner.hash_tree_root()
+		} else if let BeaconBlockBody::Deneb(mut inner) = t {
+			inner.hash_tree_root()
+		} else {
+			unreachable!()
+		}
+	}
+}
+
+impl<
+		const MAX_PROPOSER_SLASHINGS: usize,
+		const MAX_VALIDATORS_PER_COMMITTEE: usize,
+		const MAX_ATTESTER_SLASHINGS: usize,
+		const MAX_ATTESTATIONS: usize,
+		const MAX_DEPOSITS: usize,
+		const MAX_VOLUNTARY_EXITS: usize,
+		const SYNC_COMMITTEE_SIZE: usize,
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+		const MAX_BLS_TO_EXECUTION_CHANGES: usize,
+	> ssz_rs::Sized
+	for BeaconBlockBody<
+		MAX_PROPOSER_SLASHINGS,
+		MAX_VALIDATORS_PER_COMMITTEE,
+		MAX_ATTESTER_SLASHINGS,
+		MAX_ATTESTATIONS,
+		MAX_DEPOSITS,
+		MAX_VOLUNTARY_EXITS,
+		SYNC_COMMITTEE_SIZE,
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+		MAX_BLS_TO_EXECUTION_CHANGES,
+	>
+{
+	fn is_variable_size() -> bool {
+		true
+	}
+
+	fn ssz_size_hint() -> usize {
+		0
+	}
+}
+
+impl<
+		const MAX_PROPOSER_SLASHINGS: usize,
+		const MAX_VALIDATORS_PER_COMMITTEE: usize,
+		const MAX_ATTESTER_SLASHINGS: usize,
+		const MAX_ATTESTATIONS: usize,
+		const MAX_DEPOSITS: usize,
+		const MAX_VOLUNTARY_EXITS: usize,
+		const SYNC_COMMITTEE_SIZE: usize,
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+		const MAX_BLS_TO_EXECUTION_CHANGES: usize,
+	> ssz_rs::Serialize
+	for BeaconBlockBody<
+		MAX_PROPOSER_SLASHINGS,
+		MAX_VALIDATORS_PER_COMMITTEE,
+		MAX_ATTESTER_SLASHINGS,
+		MAX_ATTESTATIONS,
+		MAX_DEPOSITS,
+		MAX_VOLUNTARY_EXITS,
+		SYNC_COMMITTEE_SIZE,
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+		MAX_BLS_TO_EXECUTION_CHANGES,
+	>
+{
+	fn serialize(&self, buffer: &mut Vec<u8>) -> Result<usize, SerializeError> {
+		match self {
+			BeaconBlockBody::Bellatrix(inner) => inner.serialize(buffer),
+			BeaconBlockBody::Capella(inner) => inner.serialize(buffer),
+			BeaconBlockBody::Deneb(inner) => inner.serialize(buffer),
+		}
+	}
+}
+
+impl<
+		const MAX_PROPOSER_SLASHINGS: usize,
+		const MAX_VALIDATORS_PER_COMMITTEE: usize,
+		const MAX_ATTESTER_SLASHINGS: usize,
+		const MAX_ATTESTATIONS: usize,
+		const MAX_DEPOSITS: usize,
+		const MAX_VOLUNTARY_EXITS: usize,
+		const SYNC_COMMITTEE_SIZE: usize,
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+		const MAX_BLS_TO_EXECUTION_CHANGES: usize,
+	> ssz_rs::Deserialize
+	for BeaconBlockBody<
+		MAX_PROPOSER_SLASHINGS,
+		MAX_VALIDATORS_PER_COMMITTEE,
+		MAX_ATTESTER_SLASHINGS,
+		MAX_ATTESTATIONS,
+		MAX_DEPOSITS,
+		MAX_VOLUNTARY_EXITS,
+		SYNC_COMMITTEE_SIZE,
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+		MAX_BLS_TO_EXECUTION_CHANGES,
+	>
+{
+	fn deserialize(_encoding: &[u8]) -> Result<Self, DeserializeError>
+	where
+		Self: Sized,
+	{
+		panic!("not implemented");
+	}
+}
+
+impl<
+		const MAX_PROPOSER_SLASHINGS: usize,
+		const MAX_VALIDATORS_PER_COMMITTEE: usize,
+		const MAX_ATTESTER_SLASHINGS: usize,
+		const MAX_ATTESTATIONS: usize,
+		const MAX_DEPOSITS: usize,
+		const MAX_VOLUNTARY_EXITS: usize,
+		const SYNC_COMMITTEE_SIZE: usize,
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+		const MAX_BLS_TO_EXECUTION_CHANGES: usize,
+	> ssz_rs::SszReflect
+	for BeaconBlockBody<
+		MAX_PROPOSER_SLASHINGS,
+		MAX_VALIDATORS_PER_COMMITTEE,
+		MAX_ATTESTER_SLASHINGS,
+		MAX_ATTESTATIONS,
+		MAX_DEPOSITS,
+		MAX_VOLUNTARY_EXITS,
+		SYNC_COMMITTEE_SIZE,
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+		MAX_BLS_TO_EXECUTION_CHANGES,
+	>
+{
+	fn ssz_type_class(&self) -> ssz_rs::SszTypeClass {
+		match self {
+			BeaconBlockBody::Bellatrix(inner) => inner.ssz_type_class(),
+			BeaconBlockBody::Capella(inner) => inner.ssz_type_class(),
+			BeaconBlockBody::Deneb(inner) => inner.ssz_type_class(),
+		}
+	}
+}
+
+impl<
+		const MAX_PROPOSER_SLASHINGS: usize,
+		const MAX_VALIDATORS_PER_COMMITTEE: usize,
+		const MAX_ATTESTER_SLASHINGS: usize,
+		const MAX_ATTESTATIONS: usize,
+		const MAX_DEPOSITS: usize,
+		const MAX_VOLUNTARY_EXITS: usize,
+		const SYNC_COMMITTEE_SIZE: usize,
+		const BYTES_PER_LOGS_BLOOM: usize,
+		const MAX_EXTRA_DATA_BYTES: usize,
+		const MAX_BYTES_PER_TRANSACTION: usize,
+		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
+		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
+		const MAX_BLS_TO_EXECUTION_CHANGES: usize,
+	> ssz_rs::SimpleSerialize
+	for BeaconBlockBody<
+		MAX_PROPOSER_SLASHINGS,
+		MAX_VALIDATORS_PER_COMMITTEE,
+		MAX_ATTESTER_SLASHINGS,
+		MAX_ATTESTATIONS,
+		MAX_DEPOSITS,
+		MAX_VOLUNTARY_EXITS,
+		SYNC_COMMITTEE_SIZE,
+		BYTES_PER_LOGS_BLOOM,
+		MAX_EXTRA_DATA_BYTES,
+		MAX_BYTES_PER_TRANSACTION,
+		MAX_TRANSACTIONS_PER_PAYLOAD,
+		MAX_WITHDRAWALS_PER_PAYLOAD,
+		MAX_BLS_TO_EXECUTION_CHANGES,
+	>
+{
+}
+
+#[derive(
+	Debug, Clone, Default, SimpleSerialize, PartialEq, Eq, serde::Serialize, serde::Deserialize,
 )]
-#[derive(Debug, Clone, SimpleSerialize, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
 pub struct BeaconBlock<
 	const MAX_PROPOSER_SLASHINGS: usize,
 	const MAX_VALIDATORS_PER_COMMITTEE: usize,
@@ -461,42 +823,6 @@ pub struct BeaconBlock<
 		MAX_WITHDRAWALS_PER_PAYLOAD,
 		MAX_BLS_TO_EXECUTION_CHANGES,
 	>,
-}
-
-impl<
-		const MAX_PROPOSER_SLASHINGS: usize,
-		const MAX_VALIDATORS_PER_COMMITTEE: usize,
-		const MAX_ATTESTER_SLASHINGS: usize,
-		const MAX_ATTESTATIONS: usize,
-		const MAX_DEPOSITS: usize,
-		const MAX_VOLUNTARY_EXITS: usize,
-		const SYNC_COMMITTEE_SIZE: usize,
-		const BYTES_PER_LOGS_BLOOM: usize,
-		const MAX_EXTRA_DATA_BYTES: usize,
-		const MAX_BYTES_PER_TRANSACTION: usize,
-		const MAX_TRANSACTIONS_PER_PAYLOAD: usize,
-		const MAX_WITHDRAWALS_PER_PAYLOAD: usize,
-		const MAX_BLS_TO_EXECUTION_CHANGES: usize,
-	> Default
-	for BeaconBlock<
-		MAX_PROPOSER_SLASHINGS,
-		MAX_VALIDATORS_PER_COMMITTEE,
-		MAX_ATTESTER_SLASHINGS,
-		MAX_ATTESTATIONS,
-		MAX_DEPOSITS,
-		MAX_VOLUNTARY_EXITS,
-		SYNC_COMMITTEE_SIZE,
-		BYTES_PER_LOGS_BLOOM,
-		MAX_EXTRA_DATA_BYTES,
-		MAX_BYTES_PER_TRANSACTION,
-		MAX_TRANSACTIONS_PER_PAYLOAD,
-		MAX_WITHDRAWALS_PER_PAYLOAD,
-		MAX_BLS_TO_EXECUTION_CHANGES,
-	>
-{
-	fn default() -> Self {
-		BeaconBlock::Capella(BeaconBlockCapella::default())
-	}
 }
 
 #[derive(
@@ -583,41 +909,3 @@ pub struct BeaconState<
 	pub next_withdrawal_validator_index: ValidatorIndex,
 	pub historical_summaries: List<HistoricalSummary, HISTORICAL_ROOTS_LIMIT>,
 }
-
-pub type BeaconBlockAlias = BeaconBlock<
-	MAX_PROPOSER_SLASHINGS,
-	MAX_VALIDATORS_PER_COMMITTEE,
-	MAX_ATTESTER_SLASHINGS,
-	MAX_ATTESTATIONS,
-	MAX_DEPOSITS,
-	MAX_VOLUNTARY_EXITS,
-	SYNC_COMMITTEE_SIZE,
-	BYTES_PER_LOGS_BLOOM,
-	MAX_EXTRA_DATA_BYTES,
-	MAX_BYTES_PER_TRANSACTION,
-	MAX_TRANSACTIONS_PER_PAYLOAD,
-	MAX_WITHDRAWALS_PER_PAYLOAD,
-	MAX_BLS_TO_EXECUTION_CHANGES,
->;
-
-pub type ExecutionPayloadAlias = ExecutionPayloadCapella<
-	BYTES_PER_LOGS_BLOOM,
-	MAX_EXTRA_DATA_BYTES,
-	MAX_BYTES_PER_TRANSACTION,
-	MAX_TRANSACTIONS_PER_PAYLOAD,
-	MAX_WITHDRAWALS_PER_PAYLOAD,
->;
-
-// #[cfg(test)]
-// mod test {
-// 	use std::fs;
-
-// 	use super::BeaconBlockAlias;
-
-// 	#[test]
-// 	fn test_beacon_block_alias() {
-// 		let l = fs::read_to_string("./src/test.json").unwrap();
-// 		let block: BeaconBlockAlias = serde_json::from_str(&l);
-
-// 	}
-// }
