@@ -7,7 +7,7 @@ use primitive_types::H256;
 use ssz_rs::Node;
 
 /// This holds the relevant data required to prove the state root in the execution payload.
-#[derive(Debug, Clone, PartialEq, Eq, Default, codec::Encode, codec::Decode)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct ExecutionPayloadProof {
 	/// The state root in the `ExecutionPayload` which represents the commitment to
 	/// the ethereum world state in the yellow paper.
@@ -24,9 +24,7 @@ pub struct ExecutionPayloadProof {
 
 /// Holds the neccessary proofs required to verify a header in the `block_roots` field
 /// either in [`BeaconState`] or [`HistoricalBatch`].
-#[derive(
-	serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq, codec::Encode, codec::Decode,
-)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct BlockRootsProof {
 	/// Generalized index of the header in the `block_roots` list.
 	pub block_header_index: u64,
@@ -36,9 +34,7 @@ pub struct BlockRootsProof {
 
 /// The block header ancestry proof, this is an enum because the header may either exist in
 /// `state.block_roots` or `state.historical_roots`.
-#[derive(
-	serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq, codec::Encode, codec::Decode,
-)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum AncestryProof {
 	/// This variant defines the proof data for a beacon chain header in the `state.block_roots`
 	BlockRoots {
@@ -67,7 +63,7 @@ pub enum AncestryProof {
 
 /// This defines the neccesary data needed to prove ancestor blocks, relative to the finalized
 /// header.
-#[derive(Debug, Clone, PartialEq, Eq, codec::Encode, codec::Decode)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AncestorBlock {
 	/// The actual beacon chain header
 	pub header: BeaconBlockHeader,
@@ -79,7 +75,7 @@ pub struct AncestorBlock {
 
 /// Holds the latest sync committee as well as an ssz proof for it's existence
 /// in an attested header.
-#[derive(Debug, Clone, PartialEq, Eq, Default, codec::Encode, codec::Decode)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct SyncCommitteeUpdate {
 	/// actual sync committee
 	pub next_sync_committee: SyncCommittee<SYNC_COMMITTEE_SIZE>,
@@ -88,7 +84,7 @@ pub struct SyncCommitteeUpdate {
 }
 
 /// Minimum state required by the light client to validate new sync committee attestations
-#[derive(Debug, Clone, PartialEq, Eq, Default, codec::Encode, codec::Decode)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct LightClientState {
 	/// The latest recorded finalized header
 	pub finalized_header: BeaconBlockHeader,
@@ -100,7 +96,7 @@ pub struct LightClientState {
 }
 
 /// Finalized header proof
-#[derive(Debug, Clone, PartialEq, Eq, Default, codec::Encode, codec::Decode)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct FinalityProof {
 	/// The latest  finalized epoch
 	pub epoch: u64,
@@ -109,7 +105,7 @@ pub struct FinalityProof {
 }
 
 /// Data required to advance the state of the light client.
-#[derive(Debug, Clone, PartialEq, Eq, Default, codec::Encode, codec::Decode)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct LightClientUpdate {
 	/// the header that the sync committee signed
 	pub attested_header: BeaconBlockHeader,
