@@ -449,8 +449,10 @@ pub struct ExecutionPayloadHeader<
 	pub block_hash: Hash32,
 	pub transactions_root: Root,
 	pub withdrawals_root: Root,
+	// TODO: Must use superstruct for this field as well
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
 	pub blob_gas_used: u64,
+	// TODO: Must use superstruct for this field as well
 	#[cfg_attr(feature = "serialize", serde(with = "crate::serde::as_string"))]
 	pub excess_blob_gas: u64,
 }
